@@ -1,6 +1,6 @@
 <?php
 
-namespace Aloefflerj\FedTheDog;
+namespace Aloefflerj\FedTheDog\Test;
 
 class UserClass
 {

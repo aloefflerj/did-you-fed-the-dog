@@ -1,10 +1,10 @@
 <?php
 
-function autoload1($class){
+function autoload($class){
 
     $prefix = 'Aloefflerj\\FedTheDog\\';
 
-    $baseDir = __DIR__ . '/';
+    $baseDir = __DIR__ . '/vendor/';
 
     $len = strlen($prefix);
 
@@ -19,9 +19,6 @@ function autoload1($class){
     if(file_exists($file)) {
         require $file;
     }
-
 };
 
-// autoload1('Aloefflerj\FedTheDog\UserClass');
-
-spl_autoload_register('autoload1');
+spl_autoload_register('autoload');
