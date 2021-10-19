@@ -4,8 +4,13 @@ namespace Aloefflerj\FedTheDog\Controller;
 
 trait UrlHelper
 {
-    public function breakUrl()
+    /**
+     * Get current url path
+     *
+     * @return string|null
+     */
+    public function getUrlPath(): ?string
     {
-        return $_SERVER['REQUEST_URI'];
+        return $_SERVER['REQUEST_URI'] ?? null;
     }
 }

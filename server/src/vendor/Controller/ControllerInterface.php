@@ -4,15 +4,15 @@ namespace Aloefflerj\FedTheDog\Controller;
 
 interface ControllerInterface
 {
-    function get();
+    function get(array $params);
 
-    function post();
+    function post(array $params, $body);
 
-    function put();
+    function put(array $params, $body);
 
-    function patch();
+    function patch(array $params, $body);
 
-    function delete();
+    function delete(array $params);
 
     function dispatch();
 

@@ -9,6 +9,7 @@ class UrlHandler implements UrlHandlerInterface
     public function processUrl()
     {
         $url = $this->breakUrl();
-        var_dump("the url is {$url}");
+
+        return $url;
     }
 }
