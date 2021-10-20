@@ -75,6 +75,10 @@ class BaseController
     {
         $currentUri = $this->urlHandler->getUriPath();
 
+        /**
+         * 
+         */
+
         if (!array_key_exists($currentUri, $this->routes)) {
             $this->error = new \Exception("Error 404", 404);
             return $this;
@@ -123,14 +127,22 @@ class BaseController
      */
     private function addRoute(string $uri, \closure $output, ?array $params): ?BaseController
     {
-        // $uri = str_replace(["{", "}"], "", $uri);
-        var_dump($uri);
+        if(strpos($uri, '{') !== false) {
+            // $headerParamsQty = substr_count($uri, "{");
+            $headerParams = explode('{', $uri);
+            $headerParams = str_replace(['}', '/'], '', $headerParams);
+            array_shift($headerParams);
+            var_dump($headerParams);
+        }
+
         if (!in_array($uri, $this->routes)) {
             $route = new \stdClass();
 
-            $route->name    = $uri;
-            $route->output  = $output;
-            $route->params  = $params;
+            $route->name            = $uri;
+            $route->output          = $output;
+            $route->headerParams    = $headerParams;
+            $route->params          = $params;
+            // $route->headersParamQty = $headerParamsQty ?? null;
 
             $this->routes[$uri] = $route;
         }
@@ -148,9 +160,8 @@ class BaseController
         return $this->routes ?? null;
     }
 
-    private function splitHeaderParams($uri) 
+    private function splitHeaderParams($uri)
     {
-        echo "<pre>" . var_dump($uri) . "</pre>";
+        // echo "<pre>" . var_dump($uri) . "</pre>";
     }
-
 }

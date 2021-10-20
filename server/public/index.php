@@ -7,6 +7,7 @@ use Aloefflerj\FedTheDog\Controller\BaseController;
 use Aloefflerj\FedTheDog\Controller\Url\UrlHandler;
 use Aloefflerj\FedTheDog\Test\UserClass;
 
+// strpos("oi, eu sou o anderson", ",");
 // $uri = new UrlHandler();
 
 // echo $uri->getUriPath();
@@ -22,7 +23,7 @@ $app->get('/', function($req, $res) {
     echo $req->name;
 }, ['id' => 1, 'name' => 'anderson']);
 
-$app->get('/param/{id}', function($req, $res) {
+$app->get('/param/{id}/{name}', function($req, $res) {
     echo "id";
     // echo $req->id;
 });
