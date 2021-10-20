@@ -22,6 +22,11 @@ $app->get('/', function($req, $res) {
     echo $req->name;
 }, ['id' => 1, 'name' => 'anderson']);
 
+$app->get('/param/{id}', function($req, $res) {
+    echo "id";
+    // echo $req->id;
+});
+
 $app->get('/about', function() {
     echo 'about';
 });

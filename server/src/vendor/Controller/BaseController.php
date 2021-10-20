@@ -80,9 +80,14 @@ class BaseController
             return $this;
         }
 
-        $callBack = $this->routes[$currentUri]->output;
+        $currentRoute = $this->routes[$currentUri];
 
-        $params = $this->routes[$currentUri]->params;
+        $routeName = $currentRoute->name;
+        $routeParams = $this->splitHeaderParams($routeName);
+
+        $callBack = $currentRoute->output;
+
+        $params = $currentRoute->params;
 
         $paramsFormatted = (object) $params;
         $callBack($paramsFormatted, '');
@@ -118,6 +123,8 @@ class BaseController
      */
     private function addRoute(string $uri, \closure $output, ?array $params): ?BaseController
     {
+        // $uri = str_replace(["{", "}"], "", $uri);
+        var_dump($uri);
         if (!in_array($uri, $this->routes)) {
             $route = new \stdClass();
 
@@ -139,6 +146,11 @@ class BaseController
     public function getRoutes(): ?array
     {
         return $this->routes ?? null;
+    }
+
+    private function splitHeaderParams($uri) 
+    {
+        echo "<pre>" . var_dump($uri) . "</pre>";
     }
 
 }
