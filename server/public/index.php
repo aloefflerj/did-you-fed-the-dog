@@ -17,9 +17,10 @@ use Aloefflerj\FedTheDog\Test\UserClass;
 
 $app = new BaseController();
 
-$app->get('/', function() {
-    echo 'home';
-}, ['id' => 1]);
+$app->get('/', function($req, $res) {
+    // var_dump($req->id);
+    echo $req->name;
+}, ['id' => 1, 'name' => 'anderson']);
 
 $app->get('/about', function() {
     echo 'about';

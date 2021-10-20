@@ -81,7 +81,11 @@ class BaseController
         }
 
         $callBack = $this->routes[$currentUri]->output;
-        $callBack();
+
+        $params = $this->routes[$currentUri]->params;
+
+        $paramsFormatted = (object) $params;
+        $callBack($paramsFormatted, '');
 
         return $this;
     }
@@ -104,14 +108,14 @@ class BaseController
      * refactor => transform into traits
      */
 
-     /**
-      * Add route helper
-      *
-      * @param string $uri
-      * @param \closure $output
-      * @param array|null $params
-      * @return array|null
-      */
+    /**
+     * Add route helper
+     *
+     * @param string $uri
+     * @param \closure $output
+     * @param array|null $params
+     * @return array|null
+     */
     private function addRoute(string $uri, \closure $output, ?array $params): ?BaseController
     {
         if (!in_array($uri, $this->routes)) {
@@ -136,4 +140,5 @@ class BaseController
     {
         return $this->routes ?? null;
     }
+
 }
