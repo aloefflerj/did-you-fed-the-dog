@@ -17,9 +17,13 @@ use Aloefflerj\FedTheDog\Test\UserClass;
 
 $app = new BaseController();
 
-echo $app->get('/', function() {
-    echo "home";
+$app->get('/', function() {
+    echo 'home';
 }, ['id' => 1]);
+
+$app->get('/about', function() {
+    echo 'about';
+});
 
 $app->dispatch();
 
