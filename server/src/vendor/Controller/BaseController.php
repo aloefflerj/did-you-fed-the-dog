@@ -104,7 +104,15 @@ class BaseController
      * refactor => transform into traits
      */
 
-    private function addRoute(string $uri, \closure $output, ?array $params)
+     /**
+      * Add route helper
+      *
+      * @param string $uri
+      * @param \closure $output
+      * @param array|null $params
+      * @return array|null
+      */
+    private function addRoute(string $uri, \closure $output, ?array $params): ?BaseController
     {
         if (!in_array($uri, $this->routes)) {
             $route = new \stdClass();
@@ -115,9 +123,16 @@ class BaseController
 
             $this->routes[$uri] = $route;
         }
+
+        return $this->routes[$uri] ? $this : null;
     }
 
-    public function getRoutes()
+    /**
+     * getRoutes
+     *
+     * @return array|null
+     */
+    public function getRoutes(): ?array
     {
         return $this->routes ?? null;
     }
