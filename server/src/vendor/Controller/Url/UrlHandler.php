@@ -1,11 +1,11 @@
 <?php
 
-namespace Aloefflerj\FedTheDog\Controller\Uri;
+namespace Aloefflerj\FedTheDog\Controller\Url;
 
 use Aloefflerj\FedTheDog\Controller\Psr\Http\Message\UriInterface;
 use Aloefflerj\FedTheDog\Controller\UrlHelper;
 
-class UriHandler
+class UrlHandler
 // class UriHandler implements UriInterface
 {
     use UrlHelper;
@@ -23,7 +23,7 @@ class UriHandler
 
     public function getPath()
     {
-        $this->path = $this->getUrlPath();
+        $this->path = $this->getUriPath();
 
         return $this->path;
     }

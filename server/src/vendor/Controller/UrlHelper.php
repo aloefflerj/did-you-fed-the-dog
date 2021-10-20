@@ -9,7 +9,7 @@ trait UrlHelper
      *
      * @return string|null
      */
-    public function getUrlPath(): ?string
+    public function getUriPath(): ?string
     {
         return $_SERVER['REQUEST_URI'] ?? null;
     }
