@@ -104,7 +104,7 @@ class BaseController
      * refactor => transform into traits
      */
 
-    private function addRoute(string $uri, \closure $output, array $params)
+    private function addRoute(string $uri, \closure $output, ?array $params)
     {
         if (!in_array($uri, $this->routes)) {
             $route = new \stdClass();
