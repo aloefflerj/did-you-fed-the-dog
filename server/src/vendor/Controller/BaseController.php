@@ -80,24 +80,44 @@ class BaseController
         /**
          * 
          */
+        $currentMappedUri = $this->urlHandler->routeWithHeaderParams($currentUri, $this->routes);
+        if(!$this->routes[$currentMappedUri]->headerParams ) {
+            $currentMappedUri = $currentUri;
+        }
         
-        if (!array_key_exists($currentUri, $this->routes)) {
+        if (!array_key_exists($currentMappedUri, $this->routes)) {
             $this->error = new \Exception("Error 404", 404);
             return $this;
         }
 
-        $currentRoute = $this->routes[$currentUri];
+        $currentRoute = $this->routes[$currentMappedUri];
 
         $routeName = $currentRoute->name;
-        $routeParams = $this->splitHeaderParams($routeName);
+        $headerParams = $currentRoute->headerParams;
 
         $callBack = $currentRoute->output;
 
         $params = $currentRoute->params;
+        
+        if($headerParams && !$params){
+            
+            $headerParamsQty = count($headerParams);
+            
+            if(substr_count($currentUri, "/") - 1 !== $headerParamsQty) {
+                $this->error = new \Exception("Error 404", 404);
+                return $this;
+            }
+            
+            $headerParamsArray = explode("/", $currentUri);
+            $params = array_slice($headerParamsArray, -$headerParamsQty);
+            
+            $params = array_combine($headerParams, $params);
+        }
 
-        $paramsFormatted = (object) $params;
+        $paramsFormatted = (object)$params;
+
         $callBack($paramsFormatted, '');
-
+        
         return $this;
     }
 

@@ -24,7 +24,7 @@ $app->get('/', function($req, $res) {
 }, ['id' => 1, 'name' => 'anderson']);
 
 $app->get('/param/{id}/{name}', function($req, $res) {
-    echo "id";
+    echo "id = {$req->id} | name = {$req->name}";
     // echo $req->id;
 });
 
