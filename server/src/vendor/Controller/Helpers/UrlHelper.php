@@ -1,6 +1,6 @@
 <?php
 
-namespace Aloefflerj\FedTheDog\Controller;
+namespace Aloefflerj\FedTheDog\Controller\Helpers;
 
 trait UrlHelper
 {

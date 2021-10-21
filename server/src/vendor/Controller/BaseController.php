@@ -2,11 +2,13 @@
 
 namespace Aloefflerj\FedTheDog\Controller;
 
+use Aloefflerj\FedTheDog\Controller\Helpers\StringHelper;
 use Aloefflerj\FedTheDog\Controller\Url\UrlHandler;
 
 class BaseController
 // class BaseController implements ControllerInterface
 {
+    use StringHelper;
     /**
      * Group all routes
      *
@@ -71,14 +73,14 @@ class BaseController
      *
      * @return BaseController
      */
-    public function dispatch(): BaseController
+    public function dispatch()
     {
         $currentUri = $this->urlHandler->getUriPath();
 
         /**
          * 
          */
-
+        
         if (!array_key_exists($currentUri, $this->routes)) {
             $this->error = new \Exception("Error 404", 404);
             return $this;
@@ -132,7 +134,6 @@ class BaseController
             $headerParams = explode('{', $uri);
             $headerParams = str_replace(['}', '/'], '', $headerParams);
             array_shift($headerParams);
-            var_dump($headerParams);
         }
 
         if (!in_array($uri, $this->routes)) {

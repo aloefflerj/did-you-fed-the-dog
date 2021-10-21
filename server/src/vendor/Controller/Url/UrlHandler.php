@@ -2,8 +2,7 @@
 
 namespace Aloefflerj\FedTheDog\Controller\Url;
 
-use Aloefflerj\FedTheDog\Controller\Psr\Http\Message\UriInterface;
-use Aloefflerj\FedTheDog\Controller\UrlHelper;
+use Aloefflerj\FedTheDog\Controller\Helpers\UrlHelper;
 
 class UrlHandler
 // class UriHandler implements UriInterface
