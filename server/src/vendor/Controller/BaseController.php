@@ -76,41 +76,27 @@ class BaseController
     public function dispatch()
     {
         $currentUri = $this->urlHandler->getUriPath();
-        
+
         $currentRoute = $this->getCurrentRoute();
 
-        if (!array_key_exists($currentRoute, $this->routes)) {
+        // Check if it is mapped
+        if (!$this->routeExists($currentRoute)) {
             $this->error = new \Exception("Error 404", 404);
             return $this;
         }
 
+        // Get the output function
         $currentRoute = $this->routes[$currentRoute];
+        $output = $currentRoute->output;
 
-        $routeName = $currentRoute->name;
-        $urlParams = $currentRoute->urlParams;
+        $callBackParams = $this->getParams($currentRoute, $currentUri);
 
-        $callBack = $currentRoute->output;
-
-        $params = $currentRoute->params;
-
-        if ($urlParams && !$params) {
-
-            $urlParamsQty = count($urlParams);
-
-            if (substr_count($currentUri, "/") - 1 !== $urlParamsQty) {
-                $this->error = new \Exception("Error 404", 404);
-                return $this;
-            }
-
-            $urlParamsArray = explode("/", $currentUri);
-            $params = array_slice($urlParamsArray, -$urlParamsQty);
-
-            $params = array_combine($urlParams, $params);
+        if ($callBackParams === null) {
+            $this->error = new \Exception("Error 404", 404);
+            return $this;
         }
 
-        $paramsFormatted = (object)$params;
-
-        $callBack($paramsFormatted, '');
+        $output($callBackParams, '');
 
         return $this;
     }
@@ -170,16 +156,27 @@ class BaseController
         return $this->routes ?? null;
     }
 
-    private function getCurrentRoute()
+    /**
+     * Get the current route that is beeing accessed
+     *
+     * @return void
+     */
+    private function getCurrentRoute(): ?string
     {
         $currentUri = $this->urlHandler->getUriPath();
 
-        $currentMappedUri = $this->urlHandler->routeWithUrlParams($currentUri, $this->routes);
-        if (!$this->routes[$currentMappedUri]->urlParams) {
-            $currentMappedUri = $currentUri;
+        // Route with url params or not
+        $currentRoute = $this->urlHandler->routeWithUrlParams($currentUri, $this->routes);
+        if (!$this->routes[$currentRoute]->urlParams) {
+            $currentRoute = $currentUri;
         }
 
-        return $currentMappedUri;
+        return $currentRoute;
+    }
+
+    private function routeExists(string $currentRoute): bool
+    {
+        return array_key_exists($currentRoute, $this->routes);
     }
 
     /**
@@ -196,6 +193,28 @@ class BaseController
             array_shift($headerParams);
         }
 
-        return $headerParams ?? null; 
+        return $headerParams ?? null;
+    }
+
+    private function getParams($currentRoute, $currentUri, ?bool $overwriteArrayParams = false)
+    {
+        $urlParams = $currentRoute->urlParams;
+        $params = $currentRoute->params;
+
+        if ($urlParams && !$params && !$overwriteArrayParams) {
+
+            $urlParamsQty = count($urlParams);
+
+            if (substr_count($currentUri, "/") - 1 !== $urlParamsQty) {
+                return null;
+            }
+
+            $urlParamsArray = explode("/", $currentUri);
+            $params = array_slice($urlParamsArray, -$urlParamsQty);
+
+            $params = array_combine($urlParams, $params);
+        }
+
+        return (object)$params;
     }
 }

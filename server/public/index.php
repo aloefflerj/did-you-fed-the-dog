@@ -18,31 +18,24 @@ use Aloefflerj\FedTheDog\Test\UserClass;
 
 $app = new BaseController();
 
-$app->get('/', function($req, $res) {
-    // var_dump($req->id);
+$app->get('/', function ($req, $res) {
     echo $req->name;
 }, ['id' => 1, 'name' => 'anderson']);
 
-$app->get('/param/{id}/{name}', function($req, $res) {
+// $app->get('/param/{id}', function ($req, $res) {
+//     echo "id = {$req->id} | name = {$req->name}"; => TRATAR ESSE ERRO
+// });
+
+$app->get('/param/{id}/{name}', function ($req, $res) {
     echo "id = {$req->id} | name = {$req->name}";
-    // echo $req->id;
 });
 
-$app->get('/about', function() {
+$app->get('/about', function () {
     echo 'about';
 });
 
 $app->dispatch();
 
-if($app->error()) {
+if ($app->error()) {
     echo $app->error()->getMessage();
 }
-
-/**
- * How I want it to be
- * $app = new Router();
- * 
- * $app->get('/', function(){
- *     echo "home";
- * }, ["id" => 1, "name" => "anderson"]);
- */
