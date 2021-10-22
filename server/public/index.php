@@ -34,6 +34,10 @@ $app->get('/about', function () {
     echo 'about';
 });
 
+$app->post('/post', function ($req, $res) {
+    echo 'post route';
+});
+
 $app->dispatch();
 
 if ($app->error()) {

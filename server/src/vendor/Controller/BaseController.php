@@ -54,13 +54,14 @@ class BaseController
      */
     public function get(string $uri, \closure $output, ?array $params = null): BaseController
     {
-        $this->addRoute($uri, $output, $params);
+        $this->addRoute($uri, $output, __FUNCTION__, $params);
         return $this;
     }
-
-    public function post($body)
+    
+    public function post(string $route, \closure $output, ?array $params = null): BaseController
     {
-        echo "<pre>", var_dump($body), "</pre>";
+        $this->addRoute($route, $output, __FUNCTION__, $params);
+        return $this;
     }
 
     public function put($body)
@@ -84,21 +85,27 @@ class BaseController
             $this->error = new \Exception("Error 404", 404);
             return $this;
         }
-
-        // Get the output function
+        
         $currentRoute = $this->routes[$currentRoute];
-        $output = $currentRoute->output;
 
-        $callBackParams = $this->getParams($currentRoute, $currentUri);
-
-        if ($callBackParams === null) {
-            $this->error = new \Exception("Error 404", 404);
+        if($currentRoute->verb === 'get') {//refactor
+            
+            // Get the output function
+            $output = $currentRoute->output;
+    
+            $callBackParams = $this->getParams($currentRoute, $currentUri);
+    
+            if ($callBackParams === null) {
+                $this->error = new \Exception("Error 404", 404);
+                return $this;
+            }
+    
+            $output($callBackParams, '');
+    
             return $this;
+
         }
 
-        $output($callBackParams, '');
-
-        return $this;
     }
 
     /**
@@ -127,7 +134,7 @@ class BaseController
      * @param array|null $params
      * @return array|null
      */
-    private function addRoute(string $uri, \closure $output, ?array $params): ?BaseController
+    private function addRoute(string $uri, \closure $output, string $verb, ?array $params): ?BaseController
     {
         $urlParams = $this->splitToParams($uri);
 
@@ -137,6 +144,7 @@ class BaseController
             $route->name            = $uri;
             $route->output          = $output;
             $route->urlParams       = $urlParams;
+            $route->verb            = $verb;
             $route->params          = $params;
             // $route->headersParamQty = $headerParamsQty ?? null;
 
