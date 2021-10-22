@@ -5,7 +5,7 @@ namespace Aloefflerj\FedTheDog\Controller\Helpers;
 trait StringHelper
 {
     /**
-     * Returns equal string until encounters something different
+     * Returns equal parts of string until encounters something different
      *
      * @param string $string1
      * @param string $string2

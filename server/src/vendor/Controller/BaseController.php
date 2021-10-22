@@ -76,48 +76,42 @@ class BaseController
     public function dispatch()
     {
         $currentUri = $this->urlHandler->getUriPath();
-
-        /**
-         * 
-         */
-        $currentMappedUri = $this->urlHandler->routeWithHeaderParams($currentUri, $this->routes);
-        if(!$this->routes[$currentMappedUri]->headerParams ) {
-            $currentMappedUri = $currentUri;
-        }
         
-        if (!array_key_exists($currentMappedUri, $this->routes)) {
+        $currentRoute = $this->getCurrentRoute();
+
+        if (!array_key_exists($currentRoute, $this->routes)) {
             $this->error = new \Exception("Error 404", 404);
             return $this;
         }
 
-        $currentRoute = $this->routes[$currentMappedUri];
+        $currentRoute = $this->routes[$currentRoute];
 
         $routeName = $currentRoute->name;
-        $headerParams = $currentRoute->headerParams;
+        $urlParams = $currentRoute->urlParams;
 
         $callBack = $currentRoute->output;
 
         $params = $currentRoute->params;
-        
-        if($headerParams && !$params){
-            
-            $headerParamsQty = count($headerParams);
-            
-            if(substr_count($currentUri, "/") - 1 !== $headerParamsQty) {
+
+        if ($urlParams && !$params) {
+
+            $urlParamsQty = count($urlParams);
+
+            if (substr_count($currentUri, "/") - 1 !== $urlParamsQty) {
                 $this->error = new \Exception("Error 404", 404);
                 return $this;
             }
-            
-            $headerParamsArray = explode("/", $currentUri);
-            $params = array_slice($headerParamsArray, -$headerParamsQty);
-            
-            $params = array_combine($headerParams, $params);
+
+            $urlParamsArray = explode("/", $currentUri);
+            $params = array_slice($urlParamsArray, -$urlParamsQty);
+
+            $params = array_combine($urlParams, $params);
         }
 
         $paramsFormatted = (object)$params;
 
         $callBack($paramsFormatted, '');
-        
+
         return $this;
     }
 
@@ -149,19 +143,14 @@ class BaseController
      */
     private function addRoute(string $uri, \closure $output, ?array $params): ?BaseController
     {
-        if(strpos($uri, '{') !== false) {
-            // $headerParamsQty = substr_count($uri, "{");
-            $headerParams = explode('{', $uri);
-            $headerParams = str_replace(['}', '/'], '', $headerParams);
-            array_shift($headerParams);
-        }
+        $urlParams = $this->splitToParams($uri);
 
         if (!in_array($uri, $this->routes)) {
             $route = new \stdClass();
 
             $route->name            = $uri;
             $route->output          = $output;
-            $route->headerParams    = $headerParams;
+            $route->urlParams       = $urlParams;
             $route->params          = $params;
             // $route->headersParamQty = $headerParamsQty ?? null;
 
@@ -181,8 +170,32 @@ class BaseController
         return $this->routes ?? null;
     }
 
-    private function splitHeaderParams($uri)
+    private function getCurrentRoute()
     {
-        // echo "<pre>" . var_dump($uri) . "</pre>";
+        $currentUri = $this->urlHandler->getUriPath();
+
+        $currentMappedUri = $this->urlHandler->routeWithUrlParams($currentUri, $this->routes);
+        if (!$this->routes[$currentMappedUri]->urlParams) {
+            $currentMappedUri = $currentUri;
+        }
+
+        return $currentMappedUri;
+    }
+
+    /**
+     * Split uri params into array
+     *
+     * @param string $uri
+     * @return array|null
+     */
+    private function splitToParams(string $uri): ?array
+    {
+        if (strpos($uri, '{') !== false) {
+            $headerParams = explode('{', $uri);
+            $headerParams = str_replace(['}', '/'], '', $headerParams);
+            array_shift($headerParams);
+        }
+
+        return $headerParams ?? null; 
     }
 }

@@ -38,18 +38,17 @@ class UrlHandler
      * refactor => transform into traits
      */
 
-    public function routeWithHeaderParams($currentUri, $routes)
+    public function routeWithUrlParams(&$currentUri, $routes)
     {
         foreach($routes as $route) {
-            // echo $route->name . "<br>";
-            $mappedRoute['same'][] = $this->stringCompare($currentUri, $route->name);
+            $mappedRoute['equal'][] = $this->stringCompare($currentUri, $route->name);
             $mappedRoute['name'][] = $route->name;
         }
 
         $longest = '';
         $routeName = '';
 
-        foreach($mappedRoute['same'] as $key => $routeChunk) {
+        foreach($mappedRoute['equal'] as $key => $routeChunk) {
             if(empty($longest) || $routeChunk > $longest) {
                 $longest = $routeChunk;
                 $routeName = $mappedRoute['name'][$key];
@@ -57,6 +56,5 @@ class UrlHandler
         }
 
         return $routeName;
-        // echo "<pre>" . var_dump($same) . "</pre>";
     }
 }
