@@ -38,13 +38,21 @@ class UrlHandler
      * refactor => transform into traits
      */
 
-    public function routeWithUrlParams(&$currentUri, $routes)
+
+     /**
+      * Search for the route with passed url params
+      *
+      * @param string $currentUri
+      * @param array $routes
+      * @return string
+      */
+    public function routeWithUrlParams(string &$currentUri, array $routes): string
     {
         foreach($routes as $route) {
             $mappedRoute['equal'][] = $this->stringCompare($currentUri, $route->name);
             $mappedRoute['name'][] = $route->name;
         }
-        return;
+
         $longest = '';
         $routeName = '';
 
@@ -54,7 +62,6 @@ class UrlHandler
                 $routeName = $mappedRoute['name'][$key];
             }
         }
-
         return $routeName;
     }
 }

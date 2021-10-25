@@ -182,13 +182,17 @@ class BaseController
     {
         $currentUri = $this->urlHandler->getUriPath();
         $currentRequestMethod = $this->getRequestMethod();
+        
         if ($currentRequestMethod === 'get') {
-            // Route with url params or not
+
+            // Check if route has url params in case of a get request
             $currentRoute = $this->urlHandler->routeWithUrlParams($currentUri, $this->routes->$currentRequestMethod);
-            if (!$this->routes->$currentRequestMethod[$currentRoute]->urlParams) {
+            if (!$this->routes->$currentRequestMethod[$currentRoute]->verbParams) {
                 $currentRoute = $currentUri;
             }
+            
         }
+
         return $currentRoute;
     }
 
