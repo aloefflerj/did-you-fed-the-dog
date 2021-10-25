@@ -3,6 +3,7 @@
 namespace Aloefflerj\FedTheDog\Controller;
 
 use Aloefflerj\FedTheDog\Controller\Helpers\StringHelper;
+use Aloefflerj\FedTheDog\Controller\Routes\Routes;
 use Aloefflerj\FedTheDog\Controller\Url\UrlHandler;
 
 class BaseController
@@ -12,9 +13,9 @@ class BaseController
     /**
      * Group all routes
      *
-     * @var array $routes
+     * @var Routes $routes
      */
-    public array $routes;
+    public Routes $routes;
 
     /**
      * Group random data
@@ -41,7 +42,8 @@ class BaseController
     public function __construct()
     {
         $this->urlHandler = new UrlHandler();
-        $this->routes = [];
+        // $this->routes = [];
+        $this->routes = new Routes();
     }
 
     /**
@@ -52,16 +54,24 @@ class BaseController
      * @param array|null $params
      * @return BaseController
      */
-    public function get(string $uri, \closure $output, ?array $params = null): BaseController
+    public function get(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
-        $this->addRoute($uri, $output, __FUNCTION__, $params);
+        // $this->addRoute($uri, $output, __FUNCTION__, $params);
+        // return $this;
+        $this->routes->get($uri, $output, $functionParams)->add();
         return $this;
+        /**
+         * how it should be
+         * $this->routes->get()->add()
+         */
     }
-    
-    public function post(string $route, \closure $output, ?array $params = null): BaseController
+
+    public function post(string $route, \closure $output, ?array $functionParams = null): BaseController
     {
-        $this->addRoute($route, $output, __FUNCTION__, $params);
+        $this->routes->post($route, $output, $functionParams)->add();
         return $this;
+        // $this->addRoute($route, $output, __FUNCTION__, $params);
+        // return $this;
     }
 
     public function put($body)
@@ -80,32 +90,31 @@ class BaseController
 
         $currentRoute = $this->getCurrentRoute();
 
+        $requestMethod = $this->getRequestMethod();
+
         // Check if it is mapped
         if (!$this->routeExists($currentRoute)) {
             $this->error = new \Exception("Error 404", 404);
             return $this;
         }
-        
-        $currentRoute = $this->routes[$currentRoute];
 
-        if($currentRoute->verb === 'get') {//refactor
-            
+        $currentRoute = $this->routes->$requestMethod[$currentRoute];
+
+        if ($currentRoute->verb === 'get') { //refactor
+
             // Get the output function
             $output = $currentRoute->output;
-    
+
             $callBackParams = $this->getParams($currentRoute, $currentUri);
-    
+
             if ($callBackParams === null) {
                 $this->error = new \Exception("Error 404", 404);
                 return $this;
             }
-    
             $output($callBackParams, '');
-    
+
             return $this;
-
         }
-
     }
 
     /**
@@ -159,7 +168,7 @@ class BaseController
      *
      * @return array|null
      */
-    public function getRoutes(): ?array
+    public function getRoutes(): ?Routes
     {
         return $this->routes ?? null;
     }
@@ -172,19 +181,21 @@ class BaseController
     private function getCurrentRoute(): ?string
     {
         $currentUri = $this->urlHandler->getUriPath();
-
-        // Route with url params or not
-        $currentRoute = $this->urlHandler->routeWithUrlParams($currentUri, $this->routes);
-        if (!$this->routes[$currentRoute]->urlParams) {
-            $currentRoute = $currentUri;
+        $currentRequestMethod = $this->getRequestMethod();
+        if ($currentRequestMethod === 'get') {
+            // Route with url params or not
+            $currentRoute = $this->urlHandler->routeWithUrlParams($currentUri, $this->routes->$currentRequestMethod);
+            if (!$this->routes->$currentRequestMethod[$currentRoute]->urlParams) {
+                $currentRoute = $currentUri;
+            }
         }
-
         return $currentRoute;
     }
 
     private function routeExists(string $currentRoute): bool
     {
-        return array_key_exists($currentRoute, $this->routes);
+        $requestMethod = $this->getRequestMethod();
+        return array_key_exists($currentRoute, $this->routes->$requestMethod);
     }
 
     /**
@@ -206,8 +217,8 @@ class BaseController
 
     private function getParams($currentRoute, $currentUri, ?bool $overwriteArrayParams = false)
     {
-        $urlParams = $currentRoute->urlParams;
-        $params = $currentRoute->params;
+        $urlParams = $currentRoute->verbParams;
+        $params = $currentRoute->functionParams;
 
         if ($urlParams && !$params && !$overwriteArrayParams) {
 
@@ -224,5 +235,27 @@ class BaseController
         }
 
         return (object)$params;
+    }
+
+    private function getRequestMethod()
+    {
+        return strtolower($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
+     * ||================================================================||
+     *                          TEST FUNCTIONS
+     * ||================================================================||
+     * 
+     * refactor => remove later
+     */
+
+    public function routesTesting(string $uri, \closure $output, ?array $functionParams = null)
+    {
+
+        $routesTest = new Routes();
+        $routesTest->get($uri, $output, $functionParams)->add();
+
+        echo "<pre>", var_dump($routesTest), "</pre>";
     }
 }

@@ -44,7 +44,7 @@ class UrlHandler
             $mappedRoute['equal'][] = $this->stringCompare($currentUri, $route->name);
             $mappedRoute['name'][] = $route->name;
         }
-
+        return;
         $longest = '';
         $routeName = '';
 

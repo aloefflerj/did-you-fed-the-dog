@@ -16,9 +16,40 @@ use Aloefflerj\FedTheDog\Test\UserClass;
 // fwrite($fp, 'Hello World');
 // fclose($fp);
 
+// $rawData = file_get_contents('php://input');
+// var_dump($rawData);
+// die();
+
 $app = new BaseController();
 
+// $app->routesTesting('/routes', function($req, $res) {
+//     echo 'olá';
+// }, ["id" => 1]);
+
+// $app->routesTesting('/routes/{id}', function($req, $res) {
+//     echo 'olá';
+// });
+
+// $app->get('/home', function ($req, $res) {
+//     echo 'bem vindo';
+// }, ['id' => 1]);
+
+// $app->get('/home/{id}', function ($req, $res) {
+//     echo 'bem vindo';
+// });
+
+// $app->post('/home', function ($req, $res) {
+//     echo 'bem vindo';
+// }, ['id' => 1]);
+
+
+// echo '<pre>', var_dump($app->getRoutes()), '</pre>';
+
+// return;
+
+
 $app->get('/', function ($req, $res) {
+    // echo 'home';
     echo $req->name;
 }, ['id' => 1, 'name' => 'anderson']);
 
