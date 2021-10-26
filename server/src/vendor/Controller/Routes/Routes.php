@@ -13,6 +13,7 @@ class Routes
     // public $put;
     // public $delete;
     // public $options;
+    private \Exception $error;
     public static $routes;
 
     public function __construct()
@@ -25,20 +26,33 @@ class Routes
         return $this->routes[$name];
     }
 
-    public function add()
+    public function add(): Routes
     {
         $currentUri = self::$current->name;
         $currentVerb = self::$current->verb;
 
-        if(!is_array($this->routes[$currentVerb])) {
+        if (!is_array($this->routes[$currentVerb])) {
             $this->routes[$currentVerb] = [];
         }
 
-        if (!in_array($currentUri, $this->routes[$currentVerb])) {
-            $this->routes[$currentVerb][$currentUri] = self::$current;
+        if (array_key_exists($currentUri, $this->routes[$currentVerb])) {
+
+            $this->error = new \Exception(
+                " Error 409 => route \"{$currentUri}\" already exists => " .
+                " function \"" . 
+                __FUNCTION__ . 
+                "\" in " . __CLASS__ .
+                " line " . __LINE__
+                , 
+                409
+            );
+
+            return $this;
         }
 
-        return $this->routes[$currentVerb][$currentUri] ? $this : null;
+        $this->routes[$currentVerb][$currentUri] = self::$current;
+
+        return $this;
     }
 
     public function get(string $uri, \closure $output, ?array $functionParams)
@@ -65,14 +79,13 @@ class Routes
             case 'get':
                 $currentRoute = (Get::getRoute($currentUri, $this->routes, $requestMethod));
                 break;
-            
+
             default:
                 echo "not get";
                 break;
-        } 
+        }
 
         return $currentRoute;
-
     }
 
     public function getRouteByName($name)
@@ -86,10 +99,13 @@ class Routes
 
     public function dispatchRoute($currentRoute)
     {
-
         $requestMethod = $this->getRequestMethod();
 
         return $this->routes[$requestMethod][$currentRoute->name]->dispatch();
+    }
 
+    public function error()
+    {
+        return $this->error ?? null;
     }
 }

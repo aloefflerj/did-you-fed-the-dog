@@ -53,6 +53,11 @@ $app->get('/', function ($req, $res) {
     echo $req->name;
 }, ['id' => 1, 'name' => 'anderson']);
 
+$app->get('/', function ($req, $res) {
+    // echo 'home';
+    echo $req->name;
+}, ['id' => 1, 'name' => 'anderson']);
+
 // $app->get('/param/{id}', function ($req, $res) {
 //     echo "id = {$req->id} | name = {$req->name}"; => TRATAR ESSE ERRO
 // });

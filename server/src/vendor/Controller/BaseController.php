@@ -58,14 +58,11 @@ class BaseController
      */
     public function get(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
-        // $this->addRoute($uri, $output, __FUNCTION__, $params);
-        // return $this;
-        $this->routes->get($uri, $output, $functionParams)->add();
+        $routes = $this->routes->get($uri, $output, $functionParams)->add();
+        if($routes->error()) {
+            $this->error = $routes->error();
+        }
         return $this;
-        /**
-         * how it should be
-         * $this->routes->get()->add()
-         */
     }
 
     public function post(string $route, \closure $output, ?array $functionParams = null): BaseController
@@ -88,6 +85,12 @@ class BaseController
      */
     public function dispatch()
     {
+        // Check if there is an error before dispatch
+        if($this->error()) {
+            echo $this->error()->getMessage();
+            die();
+        }
+
         $currentRouteName = $this->getCurrentRouteName();
 
         // Check if it is mapped
@@ -101,7 +104,7 @@ class BaseController
         $this->routes->dispatchRoute($currentRoute);
 
         return $this;
-        
+
     }
 
     /**
@@ -121,34 +124,6 @@ class BaseController
      * 
      * refactor => transform into traits
      */
-
-    /**
-     * Add route helper
-     *
-     * @param string $uri
-     * @param \closure $output
-     * @param array|null $params
-     * @return array|null
-     */
-    private function addRoute(string $uri, \closure $output, string $verb, ?array $params): ?BaseController
-    {
-        $urlParams = $this->splitToParams($uri);
-
-        if (!in_array($uri, $this->routes)) {
-            $route = new \stdClass();
-
-            $route->name            = $uri;
-            $route->output          = $output;
-            $route->urlParams       = $urlParams;
-            $route->verb            = $verb;
-            $route->params          = $params;
-            // $route->headersParamQty = $headerParamsQty ?? null;
-
-            $this->routes[$uri] = $route;
-        }
-
-        return $this->routes[$uri] ? $this : null;
-    }
 
     /**
      * getRoutes
