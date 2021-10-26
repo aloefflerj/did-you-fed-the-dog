@@ -49,8 +49,8 @@ $app = new BaseController();
 
 
 $app->get('/', function ($req, $res) {
-    // echo 'home';
-    echo $req->name;
+    echo 'home';
+    // echo $req->name;
 }, ['id' => 1, 'name' => 'anderson']);
 
 // $app->get('/param/{id}', function ($req, $res) {
@@ -69,10 +69,10 @@ $app->post('/post/{id}', function ($req, $res, $body) {
     echo "post route {$req->id}";
     echo '<pre>', var_dump($body), '</pre>';
 });
-$app->get('/post/{id}', function ($req, $res) {
-    echo "post route {$req->id}";
-    // echo '<pre>', var_dump($body), '</pre>';
-});
+// $app->get('/post/{id}', function ($req, $res) {
+//     echo "post route {$req->id}";
+//     // echo '<pre>', var_dump($body), '</pre>';
+// });
 
 
 $app->dispatch();

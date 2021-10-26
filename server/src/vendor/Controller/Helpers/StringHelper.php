@@ -32,7 +32,7 @@ trait StringHelper
         
         $same = implode("", $sameChar);
 
-        if(substr_count($same, '/') < 2) {
+        if(substr_count($same, '/') < 2 && $string2 !== '/') {
             return null;
         }
         
