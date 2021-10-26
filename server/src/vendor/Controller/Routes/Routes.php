@@ -2,8 +2,12 @@
 
 namespace Aloefflerj\FedTheDog\Controller\Routes;
 
+use Aloefflerj\FedTheDog\Controller\Helpers\UrlHelper;
+
 class Routes
 {
+    use UrlHelper;
+
     private static $current;
     // public $post;
     // public $put;
@@ -23,22 +27,6 @@ class Routes
 
     public function add()
     {
-        // $urlParams = $this->splitToParams($uri);
-
-        // if (!in_array($uri, $this->routes)) {
-        //     $route = new \stdClass();
-
-        //     $route->name            = $uri;
-        //     $route->output          = $output;
-        //     // $route->urlParams       = $urlParams;
-        //     // $route->verb            = $verb;
-        //     $route->params          = $params;
-        //     // $route->headersParamQty = $headerParamsQty ?? null;
-
-        //     $this->routes[$uri] = $route;
-        // }
-
-        // return $this->routes[$uri] ? $this : null;
         $currentUri = self::$current->name;
         $currentVerb = self::$current->verb;
 
@@ -65,5 +53,43 @@ class Routes
         self::$current = new Post($route, $output, $functionParams);
 
         return $this;
+    }
+
+    public function getCurrent($currentUri)
+    {
+        $currentRoute = null;
+
+        $requestMethod = $this->getRequestMethod();
+
+        switch ($requestMethod) {
+            case 'get':
+                $currentRoute = (Get::getRoute($currentUri, $this->routes, $requestMethod));
+                break;
+            
+            default:
+                echo "not get";
+                break;
+        } 
+
+        return $currentRoute;
+
+    }
+
+    public function getRouteByName($name)
+    {
+        $requestMethod = $this->getRequestMethod();
+
+        $currentRoute = $this->routes[$requestMethod][$name];
+
+        return $currentRoute;
+    }
+
+    public function dispatchRoute($currentRoute)
+    {
+
+        $requestMethod = $this->getRequestMethod();
+
+        return $this->routes[$requestMethod][$currentRoute->name]->dispatch();
+
     }
 }

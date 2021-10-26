@@ -13,4 +13,14 @@ trait UrlHelper
     {
         return $_SERVER['REQUEST_URI'] ?? null;
     }
+
+    /**
+     * Get request method
+     *
+     * @return string
+     */
+    private function getRequestMethod(): ?string
+    {
+        return strtolower($_SERVER['REQUEST_METHOD']);
+    }
 }

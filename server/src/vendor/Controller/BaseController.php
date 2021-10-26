@@ -3,6 +3,7 @@
 namespace Aloefflerj\FedTheDog\Controller;
 
 use Aloefflerj\FedTheDog\Controller\Helpers\StringHelper;
+use Aloefflerj\FedTheDog\Controller\Helpers\UrlHelper;
 use Aloefflerj\FedTheDog\Controller\Routes\Routes;
 use Aloefflerj\FedTheDog\Controller\Url\UrlHandler;
 
@@ -10,6 +11,7 @@ class BaseController
 // class BaseController implements ControllerInterface
 {
     use StringHelper;
+    use UrlHelper;
     /**
      * Group all routes
      *
@@ -86,35 +88,20 @@ class BaseController
      */
     public function dispatch()
     {
-        $currentUri = $this->urlHandler->getUriPath();
-
-        $currentRoute = $this->getCurrentRoute();
-
-        $requestMethod = $this->getRequestMethod();
+        $currentRouteName = $this->getCurrentRouteName();
 
         // Check if it is mapped
-        if (!$this->routeExists($currentRoute)) {
+        if (!$this->routeExists($currentRouteName)) {
             $this->error = new \Exception("Error 404", 404);
             return $this;
         }
 
-        $currentRoute = $this->routes->$requestMethod[$currentRoute];
+        $currentRoute = $this->routes->getRouteByName($currentRouteName);
 
-        if ($currentRoute->verb === 'get') { //refactor
+        $this->routes->dispatchRoute($currentRoute);
 
-            // Get the output function
-            $output = $currentRoute->output;
-
-            $callBackParams = $this->getParams($currentRoute, $currentUri);
-
-            if ($callBackParams === null) {
-                $this->error = new \Exception("Error 404", 404);
-                return $this;
-            }
-            $output($callBackParams, '');
-
-            return $this;
-        }
+        return $this;
+        
     }
 
     /**
@@ -178,21 +165,12 @@ class BaseController
      *
      * @return void
      */
-    private function getCurrentRoute(): ?string
+    private function getCurrentRouteName(): ?string
     {
         $currentUri = $this->urlHandler->getUriPath();
-        $currentRequestMethod = $this->getRequestMethod();
+
+        $currentRoute = $this->routes->getCurrent($currentUri);
         
-        if ($currentRequestMethod === 'get') {
-
-            // Check if route has url params in case of a get request
-            $currentRoute = $this->urlHandler->routeWithUrlParams($currentUri, $this->routes->$currentRequestMethod);
-            if (!$this->routes->$currentRequestMethod[$currentRoute]->verbParams) {
-                $currentRoute = $currentUri;
-            }
-            
-        }
-
         return $currentRoute;
     }
 
@@ -241,25 +219,10 @@ class BaseController
         return (object)$params;
     }
 
-    private function getRequestMethod()
-    {
-        return strtolower($_SERVER['REQUEST_METHOD']);
-    }
-
     /**
      * ||================================================================||
      *                          TEST FUNCTIONS
      * ||================================================================||
-     * 
-     * refactor => remove later
      */
 
-    public function routesTesting(string $uri, \closure $output, ?array $functionParams = null)
-    {
-
-        $routesTest = new Routes();
-        $routesTest->get($uri, $output, $functionParams)->add();
-
-        echo "<pre>", var_dump($routesTest), "</pre>";
-    }
 }
