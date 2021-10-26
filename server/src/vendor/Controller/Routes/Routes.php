@@ -117,8 +117,6 @@ class Routes
 
     private function routeExists($currentRoute, $requestMethod)
     {
-        echo "key => $currentRoute <br>";
-        echo '<pre>', var_dump($this->routes[$requestMethod]), '</pre>';
         if(!array_key_exists($currentRoute, $this->routes[$requestMethod])) {
             return false;
         }

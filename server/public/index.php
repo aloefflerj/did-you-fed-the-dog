@@ -54,7 +54,7 @@ $app->get('/', function ($req, $res) {
 }, ['id' => 1, 'name' => 'anderson']);
 
 // $app->get('/param/{id}', function ($req, $res) {
-//     echo "id = {$req->id} | name = {$req->name}"; => TRATAR ESSE ERRO
+//     echo "id = {$req->id} | name = {$req->name}";// => TRATAR ESSE ERRO
 // });
 
 $app->get('/param/{id}/{name}', function ($req, $res) {
@@ -69,8 +69,11 @@ $app->post('/post/{id}', function ($req, $res, $body) {
     echo "post route {$req->id}";
     echo '<pre>', var_dump($body), '</pre>';
 });
+$app->get('/post/{id}', function ($req, $res) {
+    echo "post route {$req->id}";
+    // echo '<pre>', var_dump($body), '</pre>';
+});
 
-// echo '<pre>', var_dump($app->getRoutes()), '</pre>';
 
 $app->dispatch();
 
