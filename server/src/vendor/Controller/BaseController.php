@@ -101,7 +101,11 @@ class BaseController
 
         $currentRoute = $this->routes->getRouteByName($currentRouteName);
 
-        $this->routes->dispatchRoute($currentRoute);
+        $dispatch = $this->routes->dispatchRoute($currentRoute);
+        if(!$dispatch) {
+            $this->error = new \Exception("Error 405", 405);
+            return $this;
+        }
 
         return $this;
 

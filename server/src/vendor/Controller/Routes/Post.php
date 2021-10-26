@@ -44,7 +44,7 @@ class Post extends Route
     public function dispatch()
     {
         $uri = self::$urlHandler->getUriPath();
-        
+
         //Get the route params
         $callBackParams = $this->getParams($uri);
 

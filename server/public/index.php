@@ -70,6 +70,8 @@ $app->post('/post/{id}', function ($req, $res, $body) {
     echo '<pre>', var_dump($body), '</pre>';
 });
 
+// echo '<pre>', var_dump($app->getRoutes()), '</pre>';
+
 $app->dispatch();
 
 if ($app->error()) {

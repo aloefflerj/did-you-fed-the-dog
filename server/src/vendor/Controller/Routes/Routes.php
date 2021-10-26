@@ -103,11 +103,26 @@ class Routes
     {
         $requestMethod = $this->getRequestMethod();
 
+        if(!$this->routeExists($currentRoute->name, $requestMethod)) {
+            return false;
+        }
+
         return $this->routes[$requestMethod][$currentRoute->name]->dispatch();
     }
 
     public function error()
     {
         return $this->error ?? null;
+    }
+
+    private function routeExists($currentRoute, $requestMethod)
+    {
+        echo "key => $currentRoute <br>";
+        echo '<pre>', var_dump($this->routes[$requestMethod]), '</pre>';
+        if(!array_key_exists($currentRoute, $this->routes[$requestMethod])) {
+            return false;
+        }
+
+        return true;
     }
 }
