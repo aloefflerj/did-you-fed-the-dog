@@ -62,9 +62,9 @@ class Routes
         return $this;
     }
 
-    public function post(string $route, \closure $output, ?array $functionParams)
+    public function post(string $uri, \closure $output, ?array $functionParams)
     {
-        self::$current = new Post($route, $output, $functionParams);
+        self::$current = new Post($uri, $output, $functionParams);
 
         return $this;
     }
@@ -79,7 +79,9 @@ class Routes
             case 'get':
                 $currentRoute = (Get::getRoute($currentUri, $this->routes, $requestMethod));
                 break;
-
+            case 'post':
+                $currentRoute = (Post::getRoute($currentUri, $this->routes, $requestMethod));
+                break;
             default:
                 echo "not get";
                 break;

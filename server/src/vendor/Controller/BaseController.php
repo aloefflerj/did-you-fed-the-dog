@@ -44,7 +44,6 @@ class BaseController
     public function __construct()
     {
         $this->urlHandler = new UrlHandler();
-        // $this->routes = [];
         $this->routes = new Routes();
     }
 
@@ -65,12 +64,13 @@ class BaseController
         return $this;
     }
 
-    public function post(string $route, \closure $output, ?array $functionParams = null): BaseController
+    public function post(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
-        $this->routes->post($route, $output, $functionParams)->add();
+        $routes = $this->routes->post($uri, $output, $functionParams)->add();
+        if($routes->error()) {
+            $this->error = $routes->error();
+        }
         return $this;
-        // $this->addRoute($route, $output, __FUNCTION__, $params);
-        // return $this;
     }
 
     public function put($body)

@@ -65,8 +65,9 @@ $app->get('/about', function () {
     echo 'about';
 });
 
-$app->post('/post', function ($req, $res) {
-    echo 'post route';
+$app->post('/post/{id}', function ($req, $res, $body) {
+    echo "post route {$req->id}";
+    echo '<pre>', var_dump($body), '</pre>';
 });
 
 $app->dispatch();
