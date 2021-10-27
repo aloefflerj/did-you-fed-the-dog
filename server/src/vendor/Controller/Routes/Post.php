@@ -40,46 +40,4 @@ class Post extends Route
 
         return $currentRoute;
     }
-
-    public function dispatch()
-    {
-        $uri = self::$urlHandler->getUriPath();
-
-        //Get the route params
-        $callBackParams = $this->getParams($uri);
-
-        if ($callBackParams === null) {
-            $this->error = new \Exception("Error 404", 404);
-            return $this;
-        }
-
-        // Get the output function
-        $output = $this->output;
-        $body   = $this->body;
-        $output($callBackParams, '', $body);
-
-        return $this;
-    }
-
-    private function getParams($currentUri, ?bool $overwriteArrayParams = false)
-    {
-        $urlParams = $this->verbParams;
-        $params = $this->functionParams;
-
-        if ($urlParams && !$params && !$overwriteArrayParams) {
-
-            $urlParamsQty = count($urlParams);
-
-            if (substr_count($currentUri, "/") - 1 !== $urlParamsQty) {
-                return null;
-            }
-
-            $urlParamsArray = explode("/", $currentUri);
-            $params = array_slice($urlParamsArray, -$urlParamsQty);
-
-            $params = array_combine($urlParams, $params);
-        }
-
-        return (object)$params;
-    }
 }

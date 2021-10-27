@@ -6,6 +6,7 @@ trait StringHelper
 {
     /**
      * Returns equal parts of string until encounters something different
+     * ignores the '/' route
      *
      * @param string $string1
      * @param string $string2

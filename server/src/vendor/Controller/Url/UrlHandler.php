@@ -57,10 +57,14 @@ class UrlHandler
         $longest = '';
         $routeName = '';
 
+        // echo "route: {$route->name}" substr_count($route->name, '/') . '<br>';
+        // echo substr_count($currentUri, '/') . '<br>';
         foreach($mappedRoute['equal'] as $key => $routeChunk) {
-            if(empty($longest) || $routeChunk > $longest) {
-                $longest = $routeChunk;
-                $routeName = $mappedRoute['name'][$key];
+            if(substr_count($mappedRoute['name'][$key], '/') === substr_count($currentUri, '/')) {
+                if(empty($longest) || $routeChunk > $longest) {
+                    $longest = $routeChunk;
+                    $routeName = $mappedRoute['name'][$key];
+                }
             }
         }
         return $routeName;

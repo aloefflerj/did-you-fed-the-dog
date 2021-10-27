@@ -7,73 +7,65 @@ use Aloefflerj\FedTheDog\Controller\BaseController;
 use Aloefflerj\FedTheDog\Controller\Url\UrlHandler;
 use Aloefflerj\FedTheDog\Test\UserClass;
 
-// strpos("oi, eu sou o anderson", ",");
-// $uri = new UrlHandler();
-
-// echo $uri->getUriPath();
-
 // $fp = fopen('php://output', 'w');
 // fwrite($fp, 'Hello World');
 // fclose($fp);
 
-// $rawData = file_get_contents('php://input');
-// var_dump($rawData);
-// die();
+header('Content-Type: application/json');
+
+$users = [
+    [
+        'id' => 1,
+        'name' => 'anderson',
+        'pet' => 'rex'
+    ],
+    [
+        'id' => 2,
+        'name' => 'juarez',
+        'pet' => 'fluffy'
+    ]
+];
 
 $app = new BaseController();
 
-// $app->routesTesting('/routes', function($req, $res) {
-//     echo 'olá';
-// }, ["id" => 1]);
+$app->get('/', function ($req, $res, $params) {
+    echo json_encode("Bem vindo, {$params->name}", JSON_PRETTY_PRINT);
+}, ['name' => 'Anderson']);
 
-// $app->routesTesting('/routes/{id}', function($req, $res) {
-//     echo 'olá';
-// });
+$app->get('/users', function ($req, $res, $params) {
+    
+    echo json_encode($params->users, JSON_PRETTY_PRINT);
 
-// $app->get('/home', function ($req, $res) {
-//     echo 'bem vindo';
-// }, ['id' => 1]);
+}, ['users' => $users]);
 
-// $app->get('/home/{id}', function ($req, $res) {
-//     echo 'bem vindo';
-// });
+$app->get('/users/{id}', function($req, $res, $params) {
 
-// $app->post('/home', function ($req, $res) {
-//     echo 'bem vindo';
-// }, ['id' => 1]);
+    $users = [
+        [
+            'id' => 1,
+            'name' => 'anderson',
+            'pet' => 'rex'
+        ],
+        [
+            'id' => 2,
+            'name' => 'juarez',
+            'pet' => 'fluffy'
+        ]
+    ];
+    
+    foreach($users as $user) {
+        if($user['id'] === (int)$params->id) {
+            echo json_encode($user, JSON_PRETTY_PRINT);
+        }
+    }
 
-
-// echo '<pre>', var_dump($app->getRoutes()), '</pre>';
-
-// return;
-
-
-$app->get('/', function ($req, $res) {
-    echo 'home';
-    // echo $req->name;
-}, ['id' => 1, 'name' => 'anderson']);
-
-// $app->get('/param/{id}', function ($req, $res) {
-//     echo "id = {$req->id} | name = {$req->name}";// => TRATAR ESSE ERRO
-// });
-
-$app->get('/param/{id}/{name}', function ($req, $res) {
-    echo "id = {$req->id} | name = {$req->name}";
 });
 
-$app->get('/about', function () {
-    echo 'about';
-});
+$app->post('/users', function ($req, $res, $body, $params) {
 
-$app->post('/post/{id}', function ($req, $res, $body) {
-    echo "post route {$req->id}";
-    echo '<pre>', var_dump($body), '</pre>';
+    echo $body;
+    
 });
-// $app->get('/post/{id}', function ($req, $res) {
-//     echo "post route {$req->id}";
-//     // echo '<pre>', var_dump($body), '</pre>';
-// });
-
 
 $app->dispatch();
 
