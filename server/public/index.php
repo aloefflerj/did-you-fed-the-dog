@@ -78,7 +78,10 @@ $app->get('/test', function($req, $res, $params) {
     echo $message->getHeaderLine('Content-Type');
 
     $message = $message->withAddedHeader('foo', 'bar');
-    echo '<pre>', var_dump($message->getHeaders()), '</pre>';
+    var_dump($message->getHeaders());
+    
+    $message = $message->withoutHeader('content-type');
+    var_dump($message->getHeaders());
     
 });
 

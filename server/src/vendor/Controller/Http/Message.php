@@ -108,4 +108,19 @@ class Message
         return $this;
 
     }
+
+    public function withoutHeader($name)
+    {
+        $name = strtolower($name);
+
+        if(empty($this->headers[$name])) {
+            //throw new exception
+        }
+
+        $clone = clone $this;
+
+        unset($clone->headers[$name]);
+
+        return $clone;
+    }
 }
