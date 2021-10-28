@@ -76,6 +76,9 @@ $app->get('/test', function($req, $res, $params) {
     $message = $message->withHeader('Content-Type', ['application/json', 'text/plain']);
 
     echo $message->getHeaderLine('Content-Type');
+
+    $message = $message->withAddedHeader('foo', 'bar');
+    echo '<pre>', var_dump($message->getHeaders()), '</pre>';
     
 });
 

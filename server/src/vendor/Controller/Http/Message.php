@@ -12,7 +12,8 @@ class Message
 
     private array $headers;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->protocolVersion = '1.0';
     }
 
@@ -36,7 +37,7 @@ class Message
 
     public function hasHeader($name)
     {
-        if(!empty($name) && array_key_exists($name, $this->headers)) {
+        if (!empty($name) && array_key_exists($name, $this->headers)) {
             return true;
         }
 
@@ -47,19 +48,18 @@ class Message
     {
         $name = strtolower($name);
 
-        if(array_key_exists($name, $this->headers)) {
+        if (array_key_exists($name, $this->headers)) {
             return $this->headers[$name];
         }
 
         return [];
-        
     }
 
     public function getHeaderLine($name)
     {
         $name = strtolower($name);
 
-        if(array_key_exists($name, $this->headers)) {
+        if (array_key_exists($name, $this->headers)) {
             return is_array($this->headers[$name]) ? implode(', ', $this->headers[$name]) : $this->headers[$name];
         }
 
@@ -71,20 +71,41 @@ class Message
 
         $name = strtolower($name);
 
-        if(is_array($value)) {
-            foreach($value as $key => $argument) {
+        if (is_array($value)) {
+            foreach ($value as $key => $argument) {
                 $value[$key] = strtolower($argument);
             }
-        }else {
+        } else {
             $value = strtolower($value);
         }
 
-
+        // throw new \InvalidArgumentException();
         $clone = clone $this;
-        
+
         $clone->headers[$name] = $value;
 
         return $clone;
-        
+    }
+    
+    public function withAddedHeader($name, $value)
+    {
+        $name = strtolower($name);
+
+        if (is_array($value)) {
+            foreach ($value as $key => $argument) {
+                $value[$key] = strtolower($argument);
+            }
+        } else {
+            $value = strtolower($value);
+        }
+
+        if(empty($this->headers[$name])) {
+            $this->headers[$name] = $value;
+        }else {
+            $this->headers[$name][] = $value;
+        }
+
+        return $this;
+
     }
 }
