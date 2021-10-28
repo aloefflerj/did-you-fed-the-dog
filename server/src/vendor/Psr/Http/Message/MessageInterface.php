@@ -1,6 +1,6 @@
 <?php
 
-namespace Aloefflerj\FedTheDog\Controller\Psr\Http\Message;
+namespace Aloefflerj\FedTheDog\Psr\Http\Message;
 
 /**
  * HTTP messages consist of requests from a client to a server and responses

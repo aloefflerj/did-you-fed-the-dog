@@ -2,10 +2,11 @@
 
 namespace Aloefflerj\FedTheDog\Controller\Http;
 
-use Aloefflerj\FedTheDog\Controller\Psr\Http\Message\MessageInterface;
+use Aloefflerj\FedTheDog\Psr\Http\Message\MessageInterface;
+use Aloefflerj\FedTheDog\Psr\Http\Message\StreamInterface;
 
-class Message
-// class Message implements MessageInterface
+// class Message
+class Message implements MessageInterface
 {
 
     private string $protocolVersion;
@@ -122,5 +123,15 @@ class Message
         unset($clone->headers[$name]);
 
         return $clone;
+    }
+
+    public function getBody()
+    {
+        //return new StreamInterface();
+    }
+
+    public function withBody(StreamInterface $body)
+    {
+        ///return clone $this
     }
 }

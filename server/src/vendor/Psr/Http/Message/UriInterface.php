@@ -1,5 +1,5 @@
 <?php
-namespace Aloefflerj\FedTheDog\Controller\Psr\Http\Message;
+namespace Aloefflerj\FedTheDog\Psr\Http\Message;
 
 /**
  * Value object representing a URI.
