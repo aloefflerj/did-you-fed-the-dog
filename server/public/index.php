@@ -4,6 +4,7 @@
 include_once dirname(__DIR__, 1) . '/src/autoload.php';
 
 use Aloefflerj\FedTheDog\Controller\BaseController;
+use Aloefflerj\FedTheDog\Controller\Http\Message;
 use Aloefflerj\FedTheDog\Controller\Url\UrlHandler;
 use Aloefflerj\FedTheDog\Test\UserClass;
 
@@ -64,6 +65,17 @@ $app->get('/users/{id}', function($req, $res, $params) {
 $app->post('/users', function ($req, $res, $body, $params) {
 
     echo $body;
+    
+});
+
+$app->get('/test', function($req, $res, $params) {
+    $message = new Message();
+
+    $message = $message->withProtocolVersion('1.4');
+    
+    $message = $message->withHeader('Content-Type', ['application/json', 'text/plain']);
+
+    echo $message->getHeaderLine('Content-Type');
     
 });
 
