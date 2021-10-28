@@ -159,44 +159,6 @@ class BaseController
         return array_key_exists($currentRoute, $this->routes->$requestMethod);
     }
 
-    /**
-     * Split uri params into array
-     *
-     * @param string $uri
-     * @return array|null
-     */
-    private function splitToParams(string $uri): ?array
-    {
-        if (strpos($uri, '{') !== false) {
-            $headerParams = explode('{', $uri);
-            $headerParams = str_replace(['}', '/'], '', $headerParams);
-            array_shift($headerParams);
-        }
-
-        return $headerParams ?? null;
-    }
-
-    private function getParams($currentRoute, $currentUri, ?bool $overwriteArrayParams = false)
-    {
-        $urlParams = $currentRoute->verbParams;
-        $params = $currentRoute->functionParams;
-
-        if ($urlParams && !$params && !$overwriteArrayParams) {
-
-            $urlParamsQty = count($urlParams);
-
-            if (substr_count($currentUri, "/") - 1 !== $urlParamsQty) {
-                return null;
-            }
-
-            $urlParamsArray = explode("/", $currentUri);
-            $params = array_slice($urlParamsArray, -$urlParamsQty);
-
-            $params = array_combine($urlParams, $params);
-        }
-
-        return (object)$params;
-    }
 
     /**
      * ||================================================================||
