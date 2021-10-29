@@ -5,6 +5,7 @@ include_once dirname(__DIR__, 1) . '/src/autoload.php';
 
 use Aloefflerj\FedTheDog\Controller\BaseController;
 use Aloefflerj\FedTheDog\Controller\Http\Message;
+use Aloefflerj\FedTheDog\Controller\Http\Stream;
 use Aloefflerj\FedTheDog\Controller\Url\UrlHandler;
 use Aloefflerj\FedTheDog\Test\UserClass;
 
@@ -12,7 +13,7 @@ use Aloefflerj\FedTheDog\Test\UserClass;
 // fwrite($fp, 'Hello World');
 // fclose($fp);
 
-header('Content-Type: application/json');
+// header('Content-Type: application/json');
 
 $users = [
     [
@@ -69,20 +70,29 @@ $app->post('/users', function ($req, $res, $body, $params) {
 });
 
 $app->get('/test', function($req, $res, $params) {
-    $message = new Message();
-
-    $message = $message->withProtocolVersion('1.4');
     
-    $message = $message->withHeader('Content-Type', ['application/json', 'text/plain']);
+    $resource = fopen('./resource.txt', 'r');
 
-    echo $message->getHeaderLine('Content-Type');
+    $stream = new Stream($resource);
 
-    $message = $message->withAddedHeader('foo', 'bar');
-    var_dump($message->getHeaders());
+    if($stream->isWritable()) {
+        echo "writable";
+    }else {
+        echo "not writable";
+    }
+
+    echo "<br>";
+    if($stream->isReadable()) {
+        echo "readable";
+    }else {
+        echo "not readable";
+    }
+
+    echo "<br>";
     
-    $message = $message->withoutHeader('content-type');
-    var_dump($message->getHeaders());
-    
+    $meta = $stream->getMetadata();
+    echo '<pre>', var_dump($meta), '</pre>';
+
 });
 
 $app->dispatch();
