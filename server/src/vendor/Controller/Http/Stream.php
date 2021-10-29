@@ -8,11 +8,10 @@ class Stream
 // class Stream implements StreamInterface
 {
 
-    private $resource;
+    public $stream;
     private bool $writable;
     private bool $readable;
     private ?int $size;
-    private $data;
 
     public function __construct($resource)
     {
@@ -43,7 +42,7 @@ class Stream
 
     public function __toString()
     {
-        echo $this->data;
+        echo $this->read($this->getSize());
     }
 
     public function isWritable()
@@ -76,12 +75,16 @@ class Stream
 
     public function close(): void
     {
-        fclose($this->stream);
+        if ($this->isStream()) {
+            fclose($this->stream);
+        }
+
+        $this->detach();
     }
 
     public function detach()
     {
-        if (empty($this->stream)) {
+        if (!$this->isStream()) {
             return null;
         }
 
@@ -162,6 +165,49 @@ class Stream
                 )
             );
         }
+    }
+
+    public function rewind()
+    {
+        $this->seek(0);
+    }
+
+    public function write($string)
+    {
+        $this->size = 0;
+
+        if ($this->isStream() && $this->isWritable()) {
+            $size = fwrite($this->stream, $string);
+        }
+
+        if ($size === false) {
+            throw new \RuntimeException(
+                'Unable to write %s to stream',
+                $string
+            );
+        }
+
+        $this->size = null;
+
+        return $size;
+    }
+
+    public function read($length)
+    {
+        $string = false;
+
+        if ($this->isStream() && $this->isReadable()) {
+            $string = fread($this->stream, $length);
+        }
+
+        if ($string === false) {
+            throw new \RuntimeException(
+                'Unable to read from stream'
+            );
+        }
+
+        return $string;
+
     }
 
     protected function isStream(): bool

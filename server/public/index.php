@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+ini_set('display_errors', 'on');
+error_reporting(E_ALL);
 
 include_once dirname(__DIR__, 1) . '/src/autoload.php';
 
@@ -92,7 +96,21 @@ $app->get('/test', function($req, $res, $params) {
     
     $meta = $stream->getMetadata();
     echo '<pre>', var_dump($meta), '</pre>';
+    
+    $stream->seek(3);
+    echo $stream->tell();
 
+    $stream->rewind();
+    echo $stream->tell();
+
+    // $size = $stream->write('Hello Worlddddd!');
+
+    // echo "<br> escreveu $size bytes<br>";
+
+    $string = $stream->read(4);
+    echo "leu $string";
+
+    $stream->close();
 });
 
 $app->dispatch();
