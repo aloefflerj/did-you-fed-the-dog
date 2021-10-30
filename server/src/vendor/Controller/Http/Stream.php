@@ -4,8 +4,7 @@ namespace Aloefflerj\FedTheDog\Controller\Http;
 
 use Aloefflerj\FedTheDog\Psr\Http\Message\StreamInterface;
 
-class Stream
-// class Stream implements StreamInterface
+class Stream implements StreamInterface
 {
 
     public $stream;
@@ -53,6 +52,11 @@ class Stream
     public function isReadable()
     {
         return $this->readable;
+    }
+
+    public function isSeekable()
+    {
+        return $this->seekable;
     }
 
     public function getMetadata($key = null)
@@ -174,7 +178,7 @@ class Stream
 
     public function write($string)
     {
-        $this->size = 0;
+        $size = 0;
 
         if ($this->isStream() && $this->isWritable()) {
             $size = fwrite($this->stream, $string);
@@ -208,6 +212,25 @@ class Stream
 
         return $string;
 
+    }
+
+    public function getContents()
+    {   
+        if(!$this->isReadable()) {
+            throw new \RuntimeException(
+                'Unable to read from file'
+            );
+        }
+
+        $string = stream_get_contents($this->stream);
+
+        if($string === false) {
+            throw new \RuntimeException(
+                'Unable to read from stream'
+            );
+        }
+        
+        return $string;
     }
 
     protected function isStream(): bool

@@ -13,6 +13,8 @@ class Message implements MessageInterface
 
     private array $headers;
 
+    private $body;
+
     public function __construct()
     {
         $this->protocolVersion = '1.0';
@@ -127,11 +129,16 @@ class Message implements MessageInterface
 
     public function getBody()
     {
-        //return new StreamInterface();
+        return new StreamInterface();
     }
 
     public function withBody(StreamInterface $body)
     {
-        ///return clone $this
+        $clone = clone $this;
+
+        $clone->body = $body;
+
+        return $clone;
+
     }
 }

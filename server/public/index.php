@@ -75,42 +75,15 @@ $app->post('/users', function ($req, $res, $body, $params) {
 
 $app->get('/test', function($req, $res, $params) {
     
-    $resource = fopen('./resource.txt', 'r');
+    $stream = new Stream(fopen('./resource.txt', 'r'));
+    // $stream = 
+    $stream->write('Hello');
 
-    $stream = new Stream($resource);
+    echo $stream->getContents();
 
-    if($stream->isWritable()) {
-        echo "writable";
-    }else {
-        echo "not writable";
-    }
-
-    echo "<br>";
-    if($stream->isReadable()) {
-        echo "readable";
-    }else {
-        echo "not readable";
-    }
-
-    echo "<br>";
+    $message = new Message();
     
-    $meta = $stream->getMetadata();
-    echo '<pre>', var_dump($meta), '</pre>';
     
-    $stream->seek(3);
-    echo $stream->tell();
-
-    $stream->rewind();
-    echo $stream->tell();
-
-    // $size = $stream->write('Hello Worlddddd!');
-
-    // echo "<br> escreveu $size bytes<br>";
-
-    $string = $stream->read(4);
-    echo "leu $string";
-
-    $stream->close();
 });
 
 $app->dispatch();
