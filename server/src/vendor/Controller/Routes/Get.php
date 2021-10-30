@@ -13,7 +13,7 @@ class Get extends Route
         $this->verb         =  parent::getVerbName(__CLASS__);
         $this->verbParams   = $this->splitToParams($uri);
 
-        $this->urlHandler   = new UrlHandler();
+        self::$urlHandler   = new UrlHandler();
     }
 
     /**

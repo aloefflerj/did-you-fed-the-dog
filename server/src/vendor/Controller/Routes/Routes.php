@@ -14,7 +14,7 @@ class Routes
     // public $delete;
     // public $options;
     private \Exception $error;
-    public static $routes;
+    public $routes;
 
     public function __construct()
     {
@@ -30,7 +30,7 @@ class Routes
     {
         $currentUri = self::$current->name;
         $currentVerb = self::$current->verb;
-
+        
         if (!is_array($this->routes[$currentVerb])) {
             $this->routes[$currentVerb] = [];
         }
@@ -39,11 +39,10 @@ class Routes
 
             $this->error = new \Exception(
                 " Error 409 => route \"{$currentUri}\" already exists => " .
-                " function \"" . 
-                __FUNCTION__ . 
-                "\" in " . __CLASS__ .
-                " line " . __LINE__
-                , 
+                    " function \"" .
+                    __FUNCTION__ .
+                    "\" in " . __CLASS__ .
+                    " line " . __LINE__,
                 409
             );
 
@@ -103,7 +102,7 @@ class Routes
     {
         $requestMethod = $this->getRequestMethod();
 
-        if(!$this->routeExists($currentRoute->name, $requestMethod)) {
+        if (!$this->routeExists($currentRoute->name, $requestMethod)) {
             return false;
         }
 
@@ -117,7 +116,7 @@ class Routes
 
     private function routeExists($currentRoute, $requestMethod)
     {
-        if(!array_key_exists($currentRoute, $this->routes[$requestMethod])) {
+        if (!array_key_exists($currentRoute, $this->routes[$requestMethod])) {
             return false;
         }
 
