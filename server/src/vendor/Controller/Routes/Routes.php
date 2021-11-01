@@ -30,7 +30,11 @@ class Routes
     {
         $currentUri = self::$current->name;
         $currentVerb = self::$current->verb;
-        
+
+        if (!array_key_exists($currentVerb, $this->routes)) {
+            $this->routes[$currentVerb] = [];
+        }
+
         if (!is_array($this->routes[$currentVerb])) {
             $this->routes[$currentVerb] = [];
         }
