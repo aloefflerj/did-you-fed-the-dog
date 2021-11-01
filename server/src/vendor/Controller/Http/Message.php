@@ -129,7 +129,7 @@ class Message implements MessageInterface
 
     public function getBody()
     {
-        return new StreamInterface();
+        return $this->body;
     }
 
     public function withBody(StreamInterface $body)

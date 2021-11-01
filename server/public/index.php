@@ -76,14 +76,14 @@ $app->post('/users', function ($req, $res, $body, $params) {
 $app->get('/test', function($req, $res, $params) {
     
     $stream = new Stream(fopen('./resource.txt', 'r'));
-    // $stream = 
-    $stream->write('Hello');
 
-    echo $stream->getContents();
+    $stream->write('Hello');
 
     $message = new Message();
     
-    
+    $message = $message->withBody($stream);
+
+    echo $message->getBody()->getContents();
 });
 
 $app->dispatch();
