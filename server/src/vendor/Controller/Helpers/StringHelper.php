@@ -20,23 +20,27 @@ trait StringHelper
         $sameChar = [];
 
         foreach ($charArray1 as $key => $charElement1) {
-            if($charElement1 === $charArray2[$key]) {
-                $sameChar[] = $charElement1;
-            }else {
-                break;
+            
+            if (array_key_exists($key, $charArray2)) {
+                if ($charElement1 === $charArray2[$key]) {
+                    $sameChar[] = $charElement1;
+                } else {
+                    break;
+                }
             }
+            
         }
 
-        if(empty($sameChar)) {
+        if (empty($sameChar)) {
             return null;
         }
-        
+
         $same = implode("", $sameChar);
 
-        if(substr_count($same, '/') < 2 && $string2 !== '/') {
+        if (substr_count($same, '/') < 2 && $string2 !== '/') {
             return null;
         }
-        
+
         return $same;
     }
 }
